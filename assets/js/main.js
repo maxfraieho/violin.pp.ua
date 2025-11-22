@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // ==== НОВИЙ КОД: Telegram Integration ====
   
-  const TELEGRAM_USERNAME = 'arsen111999'; // Username Telegram Арсена
+  const TELEGRAM_USERNAME = 'Kewobe'; // Username Telegram Арсена
   const WEBHOOK_URL = 'https://violin-telegram-webhook.maxfraicho.workers.dev'; // Cloudflare Worker URL
 
   // Швидкі повідомлення для Telegram
