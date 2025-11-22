@@ -23,9 +23,12 @@ document.addEventListener('DOMContentLoaded', function () {
     link.addEventListener('click', function (e) {
       e.preventDefault();
       const targetId = this.getAttribute('href');
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth' });
+      // Security: validate href is anchor link
+      if (targetId && targetId.startsWith('#')) {
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     });
   });
@@ -36,57 +39,86 @@ document.addEventListener('DOMContentLoaded', function () {
   let currentStep = 1;
 
   function showStep(step) {
+    if (!progressBar || steps.length === 0) return;
     steps.forEach((s) => (s.style.display = 'none'));
-    document.getElementById(`step-${step}`).style.display = 'block';
+    const stepElement = document.getElementById(`step-${step}`);
+    if (stepElement) {
+      stepElement.style.display = 'block';
+    }
     const progress = (step / steps.length) * 100;
     progressBar.style.width = `${progress}%`;
     progressBar.setAttribute('aria-valuenow', progress);
   }
 
-  document.getElementById('next-1').addEventListener('click', () => {
-    currentStep = 2;
-    showStep(currentStep);
-  });
-  document.getElementById('prev-2').addEventListener('click', () => {
-    currentStep = 1;
-    showStep(currentStep);
-  });
-  document.getElementById('next-2').addEventListener('click', () => {
-    currentStep = 3;
-    showStep(currentStep);
-  });
-  document.getElementById('prev-3').addEventListener('click', () => {
-    currentStep = 2;
-    showStep(currentStep);
-  });
-  document.getElementById('next-3').addEventListener('click', () => {
-    currentStep = 4;
-    showStep(currentStep);
-  });
-  document.getElementById('prev-4').addEventListener('click', () => {
-    currentStep = 3;
-    showStep(currentStep);
+  // Add event listeners with null checks
+  const wizardButtons = [
+    { id: 'next-1', action: () => { currentStep = 2; showStep(currentStep); } },
+    { id: 'prev-2', action: () => { currentStep = 1; showStep(currentStep); } },
+    { id: 'next-2', action: () => { currentStep = 3; showStep(currentStep); } },
+    { id: 'prev-3', action: () => { currentStep = 2; showStep(currentStep); } },
+    { id: 'next-3', action: () => { currentStep = 4; showStep(currentStep); } },
+    { id: 'prev-4', action: () => { currentStep = 3; showStep(currentStep); } }
+  ];
+
+  wizardButtons.forEach(({ id, action }) => {
+    const button = document.getElementById(id);
+    if (button) {
+      button.addEventListener('click', action);
+    }
   });
 
-  document.getElementById('submit-form').addEventListener('click', () => {
-    const formData = {
-      serviceType: document.getElementById('service-type').value,
-      eventDate: document.getElementById('event-date').value,
-      eventLocation: document.getElementById('event-location').value,
-      repertoireDetails: document.getElementById('repertoire-details').value,
-      contactName: document.getElementById('contact-name').value,
-      contactEmail: document.getElementById('contact-email').value,
-    };
+  const submitButton = document.getElementById('submit-form');
+  if (submitButton) {
+    submitButton.addEventListener('click', () => {
+      // Validate form data
+      const formElements = {
+        serviceType: document.getElementById('service-type'),
+        eventDate: document.getElementById('event-date'),
+        eventLocation: document.getElementById('event-location'),
+        repertoireDetails: document.getElementById('repertoire-details'),
+        contactName: document.getElementById('contact-name'),
+        contactEmail: document.getElementById('contact-email')
+      };
 
-    // Replace with actual webhook endpoint
-    console.log('Form data:', formData);
-    alert('Votre demande a été envoyée !');
+      // Check if all elements exist
+      if (!Object.values(formElements).every(el => el)) {
+        console.error('Form elements missing');
+        return;
+      }
 
-    // Reset form
-    currentStep = 1;
-    showStep(currentStep);
-    document.getElementById('booking-form').reset();
-  });
+      const formData = {
+        serviceType: formElements.serviceType.value,
+        eventDate: formElements.eventDate.value,
+        eventLocation: formElements.eventLocation.value,
+        repertoireDetails: formElements.repertoireDetails.value,
+        contactName: formElements.contactName.value,
+        contactEmail: formElements.contactEmail.value
+      };
+
+      // Basic validation
+      if (!formData.contactEmail || !formData.contactName) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
+      }
+
+      // TODO: Replace with actual webhook endpoint
+      // For development only - remove in production
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('Form data (dev only):', formData);
+      }
+
+      // Show success message (consider using Bootstrap toast instead)
+      alert('Votre demande a été envoyée !');
+
+      // Reset form
+      currentStep = 1;
+      showStep(currentStep);
+      const bookingForm = document.getElementById('booking-form');
+      if (bookingForm) {
+        bookingForm.reset();
+      }
+    });
+  }
 
   showStep(currentStep);
 
