@@ -208,4 +208,35 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   showStep(currentStep);
+
+  // ==== PhotoSwipe Gallery ====
+
+  if (typeof PhotoSwipeLightbox !== 'undefined') {
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#gallery',
+      children: 'a',
+      pswpModule: PhotoSwipe,
+      bgOpacity: 0.9,
+      loop: true,
+      zoom: true,
+      closeOnVerticalDrag: true,
+      pinchToClose: true,
+      allowPanToNext: true,
+      showHideAnimationType: 'zoom',
+      showHideOpacity: true,
+      closeTitle: 'Fermer (Esc)',
+      zoomTitle: 'Zoomer',
+      arrowPrevTitle: 'Précédent',
+      arrowNextTitle: 'Suivant',
+      errorMsg: 'L\'image ne peut pas être chargée',
+      paddingFn: (viewportSize) => {
+        return { top: 30, bottom: 30, left: 70, right: 70 }
+      }
+    });
+
+    lightbox.init();
+    console.log('✅ PhotoSwipe gallery initialized');
+  } else {
+    console.warn('⚠️ PhotoSwipe not loaded');
+  }
 });
