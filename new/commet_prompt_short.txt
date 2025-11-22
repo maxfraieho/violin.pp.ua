@@ -1,0 +1,14 @@
+Налаштуй Environment Variables для цього Cloudflare Worker:
+
+1. Перейди в Settings → Variables
+2. Додай змінну:
+   - Name: TELEGRAM_BOT_TOKEN
+   - Value: 8242972523:AAHrhraZ2dir1Arn32nLSnPPT1RZe9XSVuQ
+   - ☑️ Encrypt
+3. Додай змінну:
+   - Name: TELEGRAM_CHAT_ID
+   - Value: 6412868393
+   - ☑️ Encrypt
+4. Збережи (Deploy якщо є кнопка)
+
+Перевір що обидві змінні з'явились і encrypted.
