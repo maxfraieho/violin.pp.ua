@@ -89,4 +89,46 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   showStep(currentStep);
+
+  // Gallery Filter
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const galleryItems = document.querySelectorAll('.gallery-item');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Set active class
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const filter = button.getAttribute('data-filter');
+
+      galleryItems.forEach(item => {
+        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Wavesurfer Audio Player
+  if (document.getElementById('waveform-container')) {
+    const wavesurfer = WaveSurfer.create({
+      container: '#waveform-container',
+      waveColor: '#adb5bd',
+      progressColor: '#343a40',
+      barWidth: 2,
+      height: 100,
+      responsive: true
+    });
+
+    // Uncomment and replace with a real audio file path when available
+    // wavesurfer.load('path/to/your/audio.mp3');
+
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    playPauseBtn.addEventListener('click', () => {
+      wavesurfer.playPause();
+    });
+  }
 });
